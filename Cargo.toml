@@ -2,7 +2,28 @@
 name = "learn-rust-gpu"
 version = "0.1.0"
 edition = "2021"
+description = "Converting 'Learn wgpu' tutorial series to 'rust-gpu'. https://sotrh.github.io/learn-wgpu/"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Nejat/learn-rust-gpu-rs"
+keywords = ["rust-gpu"]
+categories = ["graphics"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cfg-if = "1"
+log = "0.4"
+winit = "0.27"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+env_logger = "0.9"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1.6"
+console_log = "0.2.0"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4.30"
+web-sys = { version = "0.3", features = ["Document", "Window", "Element", ]}

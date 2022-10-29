@@ -1,1 +1,1 @@
-# learn-rust-gpu
+# Learn `rust-gpu`
