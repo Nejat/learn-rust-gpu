@@ -1,4 +1,5 @@
-use wgpu::{Backends, Instance};
+use wgpu::{Backends, Color, Instance};
+use winit::event::ModifiersState;
 use winit::window::Window;
 
 use crate::state::initialize::{configure_surface, request_adapter, request_device};
@@ -17,13 +18,18 @@ impl State {
         let adapter = request_adapter(&instance, &surface).await;
         let (device, queue) = request_device(&adapter).await;
         let surface_configuration = configure_surface(&adapter, &device, &surface, size);
+        let clear_color = Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0 };
 
         Self {
-            surface,
+            clear_color,
+            cursor_position: None,
             device,
+            kb_state: ModifiersState::default(),
+            mouse_input: None,
             queue,
-            surface_configuration,
             size,
+            surface,
+            surface_configuration,
         }
     }
 }

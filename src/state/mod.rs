@@ -1,14 +1,19 @@
-use wgpu::{Device, Queue, Surface, SurfaceConfiguration};
-use winit::dpi::PhysicalSize;
+use wgpu::{Color, Device, Queue, Surface, SurfaceConfiguration};
+use winit::dpi::{PhysicalPosition, PhysicalSize};
+use winit::event::{ModifiersState, MouseButton};
 
 mod initialize;
 mod state_impl;
 mod state_static;
 
 pub struct State {
-    surface: Surface,
+    clear_color: Color,
+    cursor_position: Option<PhysicalPosition<f64>>,
     device: Device,
+    kb_state: ModifiersState,
+    mouse_input: Option<MouseButton>,
     queue: Queue,
-    surface_configuration: SurfaceConfiguration,
     size: PhysicalSize<u32>,
+    surface: Surface,
+    surface_configuration: SurfaceConfiguration,
 }

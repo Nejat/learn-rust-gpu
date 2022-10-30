@@ -3,15 +3,29 @@ use std::iter::once;
 #[allow(clippy::wildcard_imports)]
 use wgpu::*;
 use wgpu::LoadOp::Clear;
-use winit::dpi::PhysicalSize;
-use winit::event::WindowEvent;
+use winit::dpi::{PhysicalPosition, PhysicalSize};
+use winit::event::{ElementState, WindowEvent};
 
 use crate::state::State;
 
 impl State {
-    #[allow(clippy::unused_self)] // todo: appease clippy temporarily
-    pub fn input(&mut self, _event: &WindowEvent) -> bool {
-        false
+    pub fn input(&mut self, event: &WindowEvent) -> bool {
+        match event {
+            WindowEvent::CursorMoved { position, .. } =>
+                self.cursor_position = Some(*position),
+            WindowEvent::ModifiersChanged(modified_state) =>
+                self.kb_state = *modified_state,
+            WindowEvent::MouseInput { state: mouse_state, button, .. } =>
+                if *mouse_state == ElementState::Pressed {
+                    self.mouse_input = Some(*button);
+                } else {
+                    self.mouse_input = None;
+                },
+            // WindowEvent::MouseWheel { delta, phase, .. } => {}
+            _ => return false
+        }
+
+        true
     }
 
     pub fn reconfigure_surface(&self) {
@@ -33,7 +47,7 @@ impl State {
                     view: &view,
                     resolve_target: None,
                     ops: Operations {
-                        load: Clear(Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0 }),
+                        load: Clear(self.clear_color),
                         store: true,
                     },
                 })],
@@ -58,6 +72,17 @@ impl State {
         }
     }
 
-    #[allow(clippy::unused_self)] // todo: appease clippy temporarily
-    pub fn update(&mut self) {}
+    pub fn update(&mut self) {
+        #[allow(clippy::cast_lossless)]
+        if let Some(PhysicalPosition { x, y }) = self.cursor_position {
+            self.clear_color = Color {
+                r: x / self.size.width as f64,
+                g: (x + y) / (self.size.width + self.size.height) as f64,
+                b: y / self.size.height as f64,
+                a: 1.0,
+            }
+        }
+
+        self.cursor_position = None;
+    }
 }

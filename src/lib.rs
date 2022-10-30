@@ -57,6 +57,11 @@ pub async fn run() {
                         },
                         ..
                     } => *control_flow = ControlFlow::Exit,
+                    WindowEvent::CursorMoved { .. } |
+                    WindowEvent::ModifiersChanged(_) |
+                    WindowEvent::MouseInput { .. } => {
+                        state.input(event);
+                    }
                     WindowEvent::Resized(physical_size) => {
                         state.resize(*physical_size);
                     }
